@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="准备工作 一台公网服务器(腾讯云, 阿里云 … 只要有外网ip的都可以)  一台内网机器(没有外网ip, 只有内网ip, 但是可以访问外部网络)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用frp实现内网穿透">
+<meta property="og:url" content="http://yoursite.com/2019/09/19/%E4%BD%BF%E7%94%A8frp%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/index.html">
+<meta property="og:site_name" content="Dazhi blog">
+<meta property="og:description" content="准备工作 一台公网服务器(腾讯云, 阿里云 … 只要有外网ip的都可以)  一台内网机器(没有外网ip, 只有内网ip, 但是可以访问外部网络)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-09-18T18:24:49.000Z">
+<meta property="article:modified_time" content="2020-06-19T10:06:53.980Z">
+<meta property="article:author" content="da zhi">
+<meta property="article:tag" content="内网穿透">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/09/19/%E4%BD%BF%E7%94%A8frp%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>使用frp实现内网穿透 | Dazhi blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Dazhi blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/19/%E4%BD%BF%E7%94%A8frp%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="da zhi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dazhi blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用frp实现内网穿透
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-18 18:24:49" itemprop="dateCreated datePublished" datetime="2019-09-18T18:24:49Z">2019-09-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-19 10:06:53" itemprop="dateModified" datetime="2020-06-19T10:06:53Z">2020-06-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h5 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h5><ol>
+<li><p>一台公网服务器(腾讯云, 阿里云 … 只要有外网ip的都可以)</p>
+</li>
+<li><p>一台内网机器(没有外网ip, 只有内网ip, 但是可以访问外部网络)</p>
+</li>
+</ol>
+<a id="more"></a>
+
+<ol start="3">
+<li><p>下载frp软件</p>
+<ul>
+<li><p>GitHub地址(可以获取最新版): <a href="https://github.com/fatedier/frp/releases" target="_blank" rel="noopener">https://github.com/fatedier/frp/releases</a></p>
+</li>
+<li><p>网盘下载(0.29.0版本): 链接:<a href="https://pan.baidu.com/s/1muHqT-g-Ocn6aTKg5l_cHQ" target="_blank" rel="noopener">https://pan.baidu.com/s/1muHqT-g-Ocn6aTKg5l_cHQ</a> 密码:gefm</p>
+</li>
+</ul>
+</li>
+</ol>
+<h5 id="公网服务器配置"><a href="#公网服务器配置" class="headerlink" title="公网服务器配置"></a>公网服务器配置</h5><ul>
+<li>将frp软件传到服务器上(这里使用腾讯云)</li>
+<li>腾讯云安全组配置, 开放端口:<ul>
+<li>7000 (frp 服务端绑定端口)</li>
+<li>9000 (frp http 访问端口)</li>
+<li>6000 (frp ssh 连接端口)</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 解压</span></span><br><span class="line">tar -zxvf frp_0.29.0_linux_amd64.tar.gz</span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除客户端相关文件</span></span><br><span class="line">rm -rf frpc*</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编辑frps.ini文件</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[common]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 服务端绑定端口</span></span><br><span class="line">bind_port = 7000</span><br><span class="line"><span class="meta">#</span><span class="bash"> http对外暴露的端口</span></span><br><span class="line">vhost_http_port = 9000</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nexus web服务</span></span><br><span class="line">[nexus]</span><br><span class="line">type = http</span><br><span class="line"><span class="meta">#</span><span class="bash"> 需要将 nexus.dazhi.info 域名解析到外网ip</span></span><br><span class="line">custom_domains = nexus.dazhi.info</span><br><span class="line">auth_token = nexus</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx web服务</span></span><br><span class="line">[nginx]</span><br><span class="line">type = http</span><br><span class="line"><span class="meta">#</span><span class="bash"> 需要将 nginx.dazhi.info 域名解析到外网ip</span></span><br><span class="line">custom_domains = nginx.dazhi.info</span><br><span class="line">auth_token = nginx</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动frp 服务端</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">可以查看启动日志</span></span><br><span class="line">./frps -c ./frps.ini</span><br><span class="line"><span class="meta">#</span><span class="bash">后台运行</span></span><br><span class="line">nohup ./frps -c ./frps.ini &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+
+<h5 id="内网服务器配置"><a href="#内网服务器配置" class="headerlink" title="内网服务器配置"></a>内网服务器配置</h5><ul>
+<li>将frp软件传到内网机器上</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 解压</span></span><br><span class="line">tar -zxvf frp_0.29.0_linux_amd64.tar.gz</span><br><span class="line"><span class="meta">#</span><span class="bash"> 删除服务端相关文件</span></span><br><span class="line">rm -rf frps*</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>编辑frpc.ini文件</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">[common]</span><br><span class="line"><span class="meta">#</span><span class="bash"> 公网服务器ip地址</span></span><br><span class="line">server_addr = x.x.x.x</span><br><span class="line"><span class="meta">#</span><span class="bash"> 公网服务器frp 绑定的端口</span></span><br><span class="line">server_port = 7000</span><br><span class="line"><span class="meta">#</span><span class="bash"> 本地frp管理</span></span><br><span class="line">admin_addr = 127.0.0.1</span><br><span class="line">admin_port = 7400</span><br><span class="line">admin_user = admin</span><br><span class="line">admin_pwd = admin</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> ssh配置</span></span><br><span class="line">[ssh]</span><br><span class="line">type = tcp</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 22</span><br><span class="line">remote_port = 6000</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nexus web服务</span></span><br><span class="line">[nexus]</span><br><span class="line">type = http</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 9090</span><br><span class="line">auth_token = nexus</span><br><span class="line"><span class="meta">#</span><span class="bash"> 需要将 nexus.dazhi.info 域名解析到外网ip</span></span><br><span class="line">custom_domains = nexus.dazhi.info</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> nginx web服务</span></span><br><span class="line">[nginx]</span><br><span class="line">type = http</span><br><span class="line">local_ip = 127.0.0.1</span><br><span class="line">local_port = 80</span><br><span class="line">auth_token = nginx</span><br><span class="line"><span class="meta">#</span><span class="bash"> 需要将 nginx.dazhi.info 域名解析到外网ip</span></span><br><span class="line">custom_domains = nginx.dazhi.info</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动frp 客户端</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">可以查看启动日志</span></span><br><span class="line">./frpc -c ./frpc.ini</span><br><span class="line"><span class="meta">#</span><span class="bash">后台运行</span></span><br><span class="line">nohup ./frpc -c ./frpc.ini &gt;/dev/null 2&gt;&amp;1 &amp;</span><br></pre></td></tr></table></figure>
+
+<h5 id="使用第三台电脑进行访问"><a href="#使用第三台电脑进行访问" class="headerlink" title="使用第三台电脑进行访问"></a>使用第三台电脑进行访问</h5><ul>
+<li>ssh 连接</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> root 为内网机器登录用户名</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> x.x.x.x 为外网ip地址</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 回车后输入内网机器登录密码</span></span><br><span class="line">ssh -oPort=6000 root@x.x.x.x</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>nginx web 访问<br><a href="http://nginx.dazhi.info:9000/" target="_blank" rel="noopener">http://nginx.dazhi.info:9000/</a></li>
+<li>nexus web 访问<br><a href="http://nexus.dazhi.info:9000/" target="_blank" rel="noopener">http://nexus.dazhi.info:9000/</a></li>
+</ul>
+<h5 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h5><ol>
+<li><p>至此就完成了内网穿透</p>
+</li>
+<li><p>更多配置访问frp官方文档. </p>
+<p><a href="https://github.com/fatedier/frp/blob/master/README_zh.md" target="_blank" rel="noopener">https://github.com/fatedier/frp/blob/master/README_zh.md</a></p>
+</li>
+</ol>
+<p><strong>有问题的同学加QQ: 742820195,欢迎讨论交流.</strong></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/" rel="tag"># 内网穿透</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/09/15/Linux-Centos7%E5%AE%89%E8%A3%85redis/" rel="prev" title="Linux-Centos7安装redis">
+      <i class="fa fa-chevron-left"></i> Linux-Centos7安装redis
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/01/04/MySQL%E9%A9%B1%E5%8A%A8%E5%8D%87%E7%BA%A7%E5%88%B08-0-15%E4%B9%8B%E5%90%8E%E4%BA%A7%E7%94%9F%E7%9A%84%E6%97%B6%E5%8C%BA%E9%97%AE%E9%A2%98/" rel="next" title="MySQL驱动升级到8.0.15之后产生的时区问题">
+      MySQL驱动升级到8.0.15之后产生的时区问题 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#公网服务器配置"><span class="nav-number">2.</span> <span class="nav-text">公网服务器配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#内网服务器配置"><span class="nav-number">3.</span> <span class="nav-text">内网服务器配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用第三台电脑进行访问"><span class="nav-number">4.</span> <span class="nav-text">使用第三台电脑进行访问</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#结尾"><span class="nav-number">5.</span> <span class="nav-text">结尾</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">da zhi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">da zhi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

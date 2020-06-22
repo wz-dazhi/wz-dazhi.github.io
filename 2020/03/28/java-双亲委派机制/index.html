@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言:说到双亲委派肯定跟类加载器ClassLoader是分不开的，下面介绍一下Java中的ClassLoader load Class的一个过程和双亲委派机制，接着自定义自己的ClassLoader。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java双亲委派机制">
+<meta property="og:url" content="http://yoursite.com/2020/03/28/java-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="Dazhi blog">
+<meta property="og:description" content="前言:说到双亲委派肯定跟类加载器ClassLoader是分不开的，下面介绍一下Java中的ClassLoader load Class的一个过程和双亲委派机制，接着自定义自己的ClassLoader。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328124519117.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328171306879.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328171204072.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328171623842.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328132525596.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328140000023.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328163410948.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328164600598.png">
+<meta property="article:published_time" content="2020-03-28T10:20:44.000Z">
+<meta property="article:modified_time" content="2020-06-19T10:09:00.447Z">
+<meta property="article:author" content="da zhi">
+<meta property="article:tag" content="JVM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328124519117.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/28/java-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>java双亲委派机制 | Dazhi blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Dazhi blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/28/java-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="da zhi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dazhi blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java双亲委派机制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-28 10:20:44" itemprop="dateCreated datePublished" datetime="2020-03-28T10:20:44Z">2020-03-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-19 10:09:00" itemprop="dateModified" datetime="2020-06-19T10:09:00Z">2020-06-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h5 id="前言"><a href="#前言" class="headerlink" title="前言:"></a>前言:</h5><p>说到双亲委派肯定跟类加载器ClassLoader是分不开的，下面介绍一下Java中的ClassLoader load Class的一个过程和双亲委派机制，接着自定义自己的ClassLoader。</p>
+<a id="more"></a>
+
+<h3 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h3><ul>
+<li><p>类加载器是用来加载Class文件的，当我们写一个java应用程序，翻译成二进制字节码（也就是Class文件格式），然后交给ClassLoader将Class文件load到内存中。</p>
+</li>
+<li><p>在加载一个CLass的过程中，由底向上查找。首先查看自定义类加载器中的缓存有没有加载过，如果没有则在App ClassLoader缓存中有没有加载，如果还没有再一层一层的往上找，最终找到Bootstrap ClassLoader。如果Bootstrap中也没有，那么Bootstrap会尝试的在它自己指定的目录中进行加载。如果在指定目录中没有找到该Class，就会交给它的子加载器Ext，Ext也会在它指定的目录中进行加载。如果也没有，就会一层一层往下找。总的而已，就是一个递归的过程，如果最终还没找到该Class，会抛出ClassNotFoundException。</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328124519117.png" alt="类加载器"></p>
+<blockquote>
+<p>JVM是按照按需加载的，采用双亲委派机制。java中ClassLoader都是继承java.lang.ClassLoader抽象类，继承该类的都有自己的父加载器（并非extends继承），因为java.lang.ClassLoader有一个成员变量parent，所以子类都有属于自己的父加载器，表明该加载器的父加载器是谁。（下面通过程序的方式打印）</p>
+<p>Java默认的类加载器：</p>
+<ul>
+<li><p>Bootstrap ClassLoader 启动类加载器：</p>
+<p>由C++实现（Hostpot，不同虚拟机实现不同）。</p>
+<p>负责加载JAVA_HOME/lib下面的核心jar文件，比如：rt.jar、charsets.jar…</p>
+</li>
+<li><p>Extension ClassLoader 扩展类加载器：</p>
+<p>继承ClassLoader抽象类，负责加载JAVA_HOME/lib/ext下面的扩展jar。</p>
+<p>或者由环境变量-Djava.ext.dirs指定的目录。</p>
+</li>
+<li><p>Application ClassLoader</p>
+<p>也是继承ClassLoader抽象类，主要负责加载java.class.path目录下的Class文件，也就是咱们自己的应用程序。</p>
+<p>由于这个类加载器是ClassLoader中的getSystemClassLoader()方法的返回值，因此一般称为<strong>系统（System）加载器</strong>。</p>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>每个ClassLoader负责加载的目录，可以通过查看源码的方式进行输出。</p>
+<ol>
+<li>sun.misc.Launcher的源码中可以看到Bootstrap加载的目录</li>
+</ol>
+<p><code>private static String bootClassPath = System.getProperty(&quot;sun.boot.class.path&quot;);</code></p>
+<ol start="2">
+<li>sun.misc.Launcher$ExtClassLoader 负责加载的目录</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328171306879.png" alt="ExtClassLoader加载目录源码"></p>
+<ol start="3">
+<li>sun.misc.Launcher$AppClassLoader 负责加载的目录</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328171204072.png" alt="AppClassLoader加载目录源码"></p>
+<ol start="4">
+<li><p>接下来可以根据源码中的路径，输出对应的加载目录</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">"------&gt; BootStrap class path"</span>);</span><br><span class="line">    String bootPath = System.getProperty(<span class="string">"sun.boot.class.path"</span>);</span><br><span class="line">    System.out.println(bootPath.replaceAll(<span class="string">":"</span>, System.lineSeparator()));</span><br><span class="line"></span><br><span class="line">    System.out.println(<span class="string">"------&gt; Ext class path"</span>);</span><br><span class="line">    String extPath = System.getProperty(<span class="string">"java.ext.dirs"</span>);</span><br><span class="line">    System.out.println(extPath.replaceAll(<span class="string">":"</span>, System.lineSeparator()));</span><br><span class="line"></span><br><span class="line">    System.out.println(<span class="string">"------&gt; App class path"</span>);</span><br><span class="line">    String classPath = System.getProperty(<span class="string">"java.class.path"</span>);</span><br><span class="line">    System.out.println(classPath.replaceAll(<span class="string">":"</span>, System.lineSeparator()));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328171623842.png" alt="输出各个ClassLoader加载的目录"></p>
+</li>
+<li><p>打印一个类的加载器。下面输出为null的属于BootStrap ClassLoader，由于Bootstrap ClassLoader启动类加载器是由JVM（C++）实现的，在java中并没有对应的Class对象，所以打印null。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 打印该类的加载器</span></span><br><span class="line">    System.out.println(Test1<span class="class">.<span class="keyword">class</span>.<span class="title">getClassLoader</span>().<span class="title">getClass</span>())</span>;</span><br><span class="line">    <span class="comment">// 打印该类的加载器的父加载器</span></span><br><span class="line">    System.out.println(Test1<span class="class">.<span class="keyword">class</span>.<span class="title">getClassLoader</span>().<span class="title">getParent</span>().<span class="title">getClass</span>())</span>;</span><br><span class="line">    <span class="comment">// 打印该类的加载器的父加载器的父加载器</span></span><br><span class="line">    System.out.println(Test1<span class="class">.<span class="keyword">class</span>.<span class="title">getClassLoader</span>().<span class="title">getParent</span>().<span class="title">getClass</span>().<span class="title">getClassLoader</span>())</span>;</span><br><span class="line">    <span class="comment">// 打印系统类加载器</span></span><br><span class="line">    System.out.println(ClassLoader.getSystemClassLoader().getClass());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328132525596.png" alt="打印类加载器"></p>
+</li>
+<li><p>一个Class文件的详细加载过程</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328140000023.png" alt="Class详细加载"></p>
+</li>
+</ul>
+<h3 id="自定义ClassLoader"><a href="#自定义ClassLoader" class="headerlink" title="自定义ClassLoader"></a>自定义ClassLoader</h3><ol>
+<li><p>准备class文件</p>
+<p>在/Users/wangzhi/test/com/test 目录下新建T.java 文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">T</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">t</span> <span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"--------&gt; t"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 命令行编译 <code>javac T.java</code></p>
+<p><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328163410948.png" alt="准备class文件"></p>
+</li>
+<li><p>自定义ClassLoader，方便演示，简单重写findClass方法。</p>
+<ol>
+<li>自定义类加载器继承ClassLoader</li>
+<li>重写findClass方法<ul>
+<li>读取class文件</li>
+<li>定义class对象</li>
+<li>返回Class对象</li>
+</ul>
+</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyClassLoader</span> <span class="keyword">extends</span> <span class="title">ClassLoader</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> Class&lt;?&gt; findClass(String name) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">        String classPath = <span class="string">"file:///Users/wangzhi/test/"</span> + name.replace(<span class="string">"."</span>, <span class="string">"/"</span>).concat(<span class="string">".class"</span>);</span><br><span class="line">        <span class="keyword">byte</span>[] cLassBytes;</span><br><span class="line">        Path path;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            path = Paths.get(<span class="keyword">new</span> URI(classPath));</span><br><span class="line">            cLassBytes = Files.readAllBytes(path);</span><br><span class="line">            <span class="keyword">return</span> defineClass(name, cLassBytes, <span class="number">0</span>, cLassBytes.length);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException | URISyntaxException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.findClass(classPath);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException </span>&#123;</span><br><span class="line">        String className = <span class="string">"com.test.T"</span>;</span><br><span class="line">        MyClassLoader loader = <span class="keyword">new</span> MyClassLoader();</span><br><span class="line">        Class&lt;?&gt; clazz = loader.findClass(className);</span><br><span class="line">        System.out.println(clazz);</span><br><span class="line">        Object t = clazz.newInstance();</span><br><span class="line">        System.out.println(t);</span><br><span class="line">        Method method = clazz.getMethod(<span class="string">"t"</span>);</span><br><span class="line">        method.invoke(t);</span><br><span class="line">        System.out.println(t.getClass().getClassLoader());</span><br><span class="line">        System.out.println(t.getClass().getClassLoader().getParent().getClass());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>输出如下：<ul>
+<li>获取T Class对象</li>
+<li>创建T的一个实例对象</li>
+<li>调用t方法</li>
+<li>打印T Class类加载器</li>
+<li>打印T Class类加载器的父加载器（也可以指定父加载器）</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/jvm/image-20200328164600598.png" alt="自定义ClassLoader输出"></p>
+</li>
+</ol>
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><ul>
+<li><p>大多数情况下java中默认的ClassLoader足够我们使用，自定义加载器是为了更好的扩展。</p>
+<p>比如：网络加载，数据库读取加载，对字节码做加解密处理。</p>
+<p>Tomcat、Spring等框架都有自己的ClassLoader</p>
+</li>
+</ul>
+<ul>
+<li><p>双亲委派机制其实是为了防止类重复加载的一个过程，最重要的一点是出于安全考虑。如果我们自己定义一个java.lang.String ，ClassLoader进行加载的时候，会检查类的权限类名是否以java.开头。如果是会报出异常</p>
+<p><code>Exception in thread &quot;main&quot; java.lang.SecurityException: **Prohibited package name: java.lang**</code></p>
+</li>
+</ul>
+<ul>
+<li>双亲委派模式是建立的ClassLoader中的loadClass方法，在上面的实验中只是简单重写了findClass方法。如果想要打破双亲委派可以重写loadClass方法，ThreadContextClassLoader可以实现基础类调用实现类代码，通过thread.setContextClassLoader指定，Tomcat、热部署等都是属于打破了双亲委派机制。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JVM/" rel="tag"># JVM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/01/04/MySQL%E9%A9%B1%E5%8A%A8%E5%8D%87%E7%BA%A7%E5%88%B08-0-15%E4%B9%8B%E5%90%8E%E4%BA%A7%E7%94%9F%E7%9A%84%E6%97%B6%E5%8C%BA%E9%97%AE%E9%A2%98/" rel="prev" title="MySQL驱动升级到8.0.15之后产生的时区问题">
+      <i class="fa fa-chevron-left"></i> MySQL驱动升级到8.0.15之后产生的时区问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/29/java-Class%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/" rel="next" title="java Class加载过程">
+      java Class加载过程 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类加载器"><span class="nav-number"></span> <span class="nav-text">类加载器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自定义ClassLoader"><span class="nav-number"></span> <span class="nav-text">自定义ClassLoader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结："><span class="nav-number"></span> <span class="nav-text">总结：</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">da zhi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">da zhi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言:今天我们一起来学习java设计模式中的策略模式(Strategy),以及C&amp;C接口的详细解析. 一天, 我们接到了项目经理发来的一个需求, 说 给我实现一个数组,并排序,然后给我打印出来. 简单,下面我们来实现这个需求 首先, 我们new 一个class, 为了方便这里取名Test. 然后定义一个int数组, 再写一个对数组排序的静态方法(排序, 打印)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java设计模式之策略模式(Strategy)">
+<meta property="og:url" content="http://yoursite.com/2018/06/02/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F-Strategy/index.html">
+<meta property="og:site_name" content="Dazhi blog">
+<meta property="og:description" content="前言:今天我们一起来学习java设计模式中的策略模式(Strategy),以及C&amp;C接口的详细解析. 一天, 我们接到了项目经理发来的一个需求, 说 给我实现一个数组,并排序,然后给我打印出来. 简单,下面我们来实现这个需求 首先, 我们new 一个class, 为了方便这里取名Test. 然后定义一个int数组, 再写一个对数组排序的静态方法(排序, 打印)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/java/design/strategy-01.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/java/design/strategy-02.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/java/design/strategy-03.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/java/design/strategy-04.png">
+<meta property="article:published_time" content="2018-06-02T15:34:43.000Z">
+<meta property="article:modified_time" content="2020-06-22T04:42:43.048Z">
+<meta property="article:author" content="da zhi">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/java/design/strategy-01.png">
+
+<link rel="canonical" href="http://yoursite.com/2018/06/02/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F-Strategy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>java设计模式之策略模式(Strategy) | Dazhi blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Dazhi blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/02/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F-Strategy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="da zhi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dazhi blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java设计模式之策略模式(Strategy)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-02 15:34:43" itemprop="dateCreated datePublished" datetime="2018-06-02T15:34:43Z">2018-06-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-22 04:42:43" itemprop="dateModified" datetime="2020-06-22T04:42:43Z">2020-06-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h5 id="前言"><a href="#前言" class="headerlink" title="前言:"></a>前言:</h5><p>今天我们一起来学习java设计模式中的策略模式(Strategy),以及C&amp;C接口的详细解析.</p>
+<p>一天, 我们接到了项目经理发来的一个需求, 说 给我实现一个数组,并排序,然后给我打印出来. 简单,下面我们来实现这个需求</p>
+<p>首先, 我们new 一个class, 为了方便这里取名Test. 然后定义一个int数组, 再写一个对数组排序的静态方法(排序, 打印)</p>
+<a id="more"></a>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span>[] arr = &#123;<span class="number">23</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">1</span>, <span class="number">5</span>&#125;;</span><br><span class="line">DataSorter.sort(arr);</span><br><span class="line">DataSorter.print(arr);</span><br></pre></td></tr></table></figure>
+
+<p>下面我们实现这个DateSorter这个类, 一个简单的冒泡排序和一个打印方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 排序(只能排序int数组)</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> arr</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">           <span class="keyword">for</span> (<span class="keyword">int</span> j = arr.length - <span class="number">1</span>; j &gt; i; j--) &#123;</span><br><span class="line">               <span class="keyword">if</span> (arr[j] &lt; arr[j - <span class="number">1</span>]) &#123;</span><br><span class="line">                   swap(arr, j, j - <span class="number">1</span>);</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 交换(int类型)</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> arr</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> x</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> y</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">int</span> temp = arr[x];</span><br><span class="line">       arr[x] = arr[y];</span><br><span class="line">       arr[y] = temp;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 打印</span></span><br><span class="line"><span class="comment">    *</span></span><br><span class="line"><span class="comment">    * <span class="doctag">@param</span> arr</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i : arr) &#123;</span><br><span class="line">           System.out.print(i + <span class="string">" "</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       System.out.println();</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>好了, 功能实现完了. 我们看一下类图:<br><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/java/design/strategy-01.png" alt="1527918918520"></p>
+<p>从上图,我们可以看到实现这个小程序是非常的简单. 而且心里美滋滋, 突然项目经理过来说,我现在不想使用数字进行排序了, 我家里有几只猫, 我想对猫进行排序. 这个时候我们的第一想法,肯定是得有一个Cat类, 为了简单起见我们定义两个属性,一个height高度, 一个weight重量.当然我们得修改DataSorter类中的排序方法, 既然我们现在是对猫进行排序, 所以我们需要对sort方法进行改造,为了方便我们增加一个sort方法, 对sort方法 <code>public static void sort(int[] arr)</code> 将<code>int[]</code> 改为<code>Cat[]</code>.  这样修改的话, 我觉得大家一眼就看出有问题了, 如果有一天我们不想根据猫排序了, 我们想根据狗来排序, 那我们是不是还得加一个狗的排序方法? 如果我们不想根据狗排序,我们想根据牛, 羊等等… 那我们是不是需要加更多更多的sort方法.所以,到了这里我们为了能够统一<code>天下</code>, 我们将sort方法的参数改为<code>Object[] arr</code>. 当然改成这个并不能满足我们当前这种情况,因为这样写的话,我们并不知道Object改如何来进行排序, 因为我们需要将Object强转成我们需要的Cat类. 那么这个sort方法也不够灵活,以后我们根据狗排序的话,是不是还得需要修改sort方法. 所以我们为了不去修改sort方法, 我们这里自己定义个比较接口,让具体的类去实现这个接口,该怎么比较,具体的类说了算,类图如下:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/java/design/strategy-02.png" alt="1527920641942"></p>
+<p>具体代码如下:</p>
+<p>Test.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Cat[] arr = &#123;<span class="keyword">new</span> Cat(<span class="number">5</span>, <span class="number">5</span>), <span class="keyword">new</span> Cat(<span class="number">1</span>, <span class="number">1</span>), <span class="keyword">new</span> Cat(<span class="number">3</span>, <span class="number">3</span>)&#125;;</span><br><span class="line">    DataSorter.sort(arr);</span><br><span class="line">    DataSorter.print(arr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>DataSorter.java</p>
+<p>因为我们需要比较任意类型, 所以sort方法可以强转为Comparable接口. (前提比较的类型都必须实现Comparable接口)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 排序(可以排序所有类型的数组)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> arr</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sort</span><span class="params">(Object[] arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = arr.length - <span class="number">1</span>; j &gt; i; j--) &#123;</span><br><span class="line">            Comparable c1 = (Comparable) arr[j];</span><br><span class="line">            Comparable c2 = (Comparable) arr[j - <span class="number">1</span>];</span><br><span class="line">            <span class="keyword">if</span> (c1.compareTo(c2) == -<span class="number">1</span>) &#123;</span><br><span class="line">                swap(arr, j, j - <span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 交换(Object类型)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> arr</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> x</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> y</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">swap</span><span class="params">(Object[] arr, <span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">    Object temp = arr[x];</span><br><span class="line">    arr[x] = arr[y];</span><br><span class="line">    arr[y] = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 打印(为了方便起见, 打印这个方法,只打印Cat)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> arr</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(Cat[] arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (Cat i : arr) &#123;</span><br><span class="line">        System.out.print(i + <span class="string">" "</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    System.out.println();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Comparable.java  </p>
+<p><strong>注意:</strong> 这里是我们自己定义的Comparable接口,而不是JDK给我们提供的(这里为了模拟JDK,所以取名一样)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Comparable</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Object o)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Cat.java   </p>
+<p> <strong>注意:</strong> 这里实现的是我们自己定义的Comparable接口,而不是JDK给我们提供的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cat</span> <span class="keyword">implements</span> <span class="title">Comparable</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 高度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> height;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 重量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> weight;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 自定义的Comparable接口</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (o <span class="keyword">instanceof</span> Cat) &#123;</span><br><span class="line">            Cat cat = (Cat) o;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.height &gt; cat.getHeight()) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.height &lt; cat.getHeight()) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 省略get set  toString ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>好了, 现在我们写了一个对猫的排序,我们说前面的猫比后面猫的高度低,就返回-1, 然后进行交换排序.结果这里就不演示了.  现在我们回过头来想一下, 现在我们这个是否已经满足了对所有类型的排序呢?答案是否定的, 在上面的代码中我们可以看到我们现在是对猫的高度进行排序,虽然我们对于sort方法是满足了对所有类型的排序.但是我们具体的比较是根据高度,还是根据重量都是在我们具体的Cat类中进行编码的,  如果我们对猫的重量排序,是不是还得需要修改Cat类中的代码? 所以说现在还是不够灵活, 为了满足这个需求呢. 这里我们定义比较器, 定义一个比较策略的接口, 让具体的比较策略都去实现这个比较器.先看java代码:</p>
+<p>Comparator.java</p>
+<p><strong>注意:</strong> 这里是我们自己定义的Comparator接口(这里为了模拟JDK,所以取名一样)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Comparator</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">compare</span><span class="params">(Object o1, Object o2)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过修改Cat.java 如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cat</span> <span class="keyword">implements</span> <span class="title">Comparable</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 高度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> height;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 重量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> weight;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用比较策略, 这里根据高度进行比较</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">	<span class="keyword">private</span> Comparator comparator = <span class="keyword">new</span> CatHeightComparator();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 自定义的Comparable接口, Comparator接口</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> comparator.compare(<span class="keyword">this</span>, o);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 省略get set  toString ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比较高度的Comparator具体实现,CatHeightComparator.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CatHeightComparator</span> <span class="keyword">implements</span> <span class="title">Comparator</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Object o1, Object o2)</span> </span>&#123;</span><br><span class="line">        Cat c1 = (Cat) o1;</span><br><span class="line">        Cat c2 = (Cat) o2;</span><br><span class="line">        <span class="keyword">if</span> (c1.getHeight() &gt; c2.getHeight()) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (c1.getHeight() &lt; c2.getHeight()) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>类图:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/java/design/strategy-03.png" alt="1527922396113"></p>
+<p>现在我们回到刚才的问题, 我们需要根据重量进行排序, 那我们现在就写一个根据重量的比较策略</p>
+<p>CatWeightComparator.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CatWeightComparator</span> <span class="keyword">implements</span> <span class="title">Comparator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Object o1, Object o2)</span> </span>&#123;</span><br><span class="line">        Cat c1 = (Cat) o1;</span><br><span class="line">        Cat c2 = (Cat) o2;</span><br><span class="line">        <span class="keyword">if</span> (c1.getWeight() &gt; c2.getWeight()) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (c1.getWeight() &lt; c2.getWeight()) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>修改Cat的比较策略实现, 其余代码不变</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 使用比较策略, 这里根据重量进行比较</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">// private Comparator comparator = new CatHeightComparator();</span></span><br><span class="line"><span class="keyword">private</span> Comparator comparator = <span class="keyword">new</span> CatWeightComparator();</span><br></pre></td></tr></table></figure>
+
+<p>现在我们整体来看一下类图结构:</p>
+<p><img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/java/design/strategy-04.png" alt="1527922764616"></p>
+<h5 id="结尾"><a href="#结尾" class="headerlink" title="结尾:"></a>结尾:</h5><p>策略模式说到这里, 我想大家是不是一下子感觉世界美好了很多. 以后我们对猫的前面两只爪进行排序, 对猫的胡须进行排序,  对猫的第一根毛的长度,第二根毛的长度… 等等,  我们只需要修改对应的比较策略是不是就ok了.  根据现实生活中,比如我们坐火车去东北, 坐飞机去东北, 坐轮船, 骑扫帚(哈利波特)…  骑大治哥(不好意思,不可以), 我们只需要更换对应的策略,是不是就能满足我们的需求. 我想现在大家基本上理解了策略模式,以及C&amp;C接口.</p>
+<p>其实到最后, 我们完全没有必要自己写排序算法, 自己写C&amp;C接口. JDK都已经全都帮我们实现了,现在我们修改成JDK为我们提供的</p>
+<p>Cat.java</p>
+<p><strong>注意:</strong> 为了突出我们使用的是JDK提供的, 这里加上了权限类名. <code>java.lang.Comparable&lt;T&gt;</code>   <code>java.util.Comparator&lt;T&gt;</code> ,  JDK提供的Comparable ,Comparator都是使用了泛型.  点击<a href="https://blog.csdn.net/s10461/article/details/53941091" target="_blank" rel="noopener">了解泛型</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Cat</span> <span class="keyword">implements</span> <span class="title">java</span>.<span class="title">lang</span>.<span class="title">Comparable</span>&lt;<span class="title">Cat</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 高度</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> height;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 重量</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> weight;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用比较策略</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"><span class="comment">//    private Comparator comparator = new CatHeightComparator();</span></span><br><span class="line"><span class="comment">//    private Comparator comparator = new CatWeightComparator();</span></span><br><span class="line">    <span class="keyword">private</span> java.util.Comparator&lt;Cat&gt; comparator = <span class="keyword">new</span> CatWeightComparator();</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 使用jdk的Comparable接口,Comparator接口</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> o</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Cat o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> comparator.compare(<span class="keyword">this</span>, o);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"> 	<span class="comment">// 省略get set  toString ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CatWeightComparator.java</p>
+<p><strong>注意:</strong> 这里我们使用JDK为我们提供的Comparator</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CatWeightComparator</span> <span class="keyword">implements</span> <span class="title">java</span>.<span class="title">util</span>.<span class="title">Comparator</span>&lt;<span class="title">Cat</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(Cat o1, Cat o2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (o1.getWeight() &gt; o2.getWeight()) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (o1.getWeight() &lt; o2.getWeight()) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Test.java</p>
+<p><strong>注意:</strong> 这里使用了JDK为我们提供的排序算法, java.util.Arrays.sort(Object[] a);</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Cat[] arr = &#123;<span class="keyword">new</span> Cat(<span class="number">5</span>, <span class="number">5</span>), <span class="keyword">new</span> Cat(<span class="number">1</span>, <span class="number">1</span>), <span class="keyword">new</span> Cat(<span class="number">3</span>, <span class="number">3</span>)&#125;;</span><br><span class="line">        java.util.Arrays.sort(arr);</span><br><span class="line">        DataSorter.print(arr);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>策略模式:</strong></p>
+<ul>
+<li>策略模式是一个比较容易理解和使用的设计模式，策略模式是对算法的封装，它把算法的责任和算法本身分割开，委派给不同的对象管理。策略模式通常把一个系列的算法封装到一系列的策略类里面，作为一个抽象策略类的子类。用一句话来说，就是“准备一组算法，并将每一个算法封装起来，使得它们可以互换”。</li>
+<li>在策略模式中，应当由客户端自己决定在什么情况下使用什么具体策略角色。</li>
+<li>策略模式仅仅封装算法，提供新算法插入到已有系统中，以及老算法从系统中“退休”的方便，策略模式并不决定在何时使用何种算法，算法的选择由客户端来决定。这在一定程度上提高了系统的灵活性，但是客户端需要理解所有具体策略类之间的区别，以便选择合适的算法，这也是策略模式的缺点之一，在一定程度上增加了客户端的使用难度。</li>
+</ul>
+<p>GitHub项目地址: <a href="https://github.com/wz-dazhi/designPatterns/tree/master/Strategy/src/com/wz/dp/strategy" target="_blank" rel="noopener">Strategy</a></p>
+<p><strong>转载请注明此处:</strong></p>
+<p><a href="http://hexo.dazhi.info/2018/06/02/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F-Strategy.html" target="_blank" rel="noopener">http://hexo.dazhi.info/2018/06/02/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F-Strategy.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"># 设计模式</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/05/23/%E4%BD%BF%E7%94%A8Hexo-GitHub%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" rel="prev" title="使用Hexo+GitHub搭建博客">
+      <i class="fa fa-chevron-left"></i> 使用Hexo+GitHub搭建博客
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/06/09/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%BF%AD%E4%BB%A3%E5%99%A8-Iterator/" rel="next" title="java设计模式之迭代器(Iterator)">
+      java设计模式之迭代器(Iterator) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#结尾"><span class="nav-number">2.</span> <span class="nav-text">结尾:</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">da zhi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">da zhi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

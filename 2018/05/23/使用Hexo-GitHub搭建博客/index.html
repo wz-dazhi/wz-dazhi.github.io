@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言:编写本章的主要目的是为了帮助那些一直想搭建博客的同学一个参考,本章搭建博客使用的是Hexo+GitHub,Hexo是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。 详细了解Hexo,使用GitHub的原因是GitHub提供的GitHub pages 是免费的,我们只需创建一个仓库就可以使用,GitHub官">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Hexo+GitHub搭建博客">
+<meta property="og:url" content="http://yoursite.com/2018/05/23/%E4%BD%BF%E7%94%A8Hexo-GitHub%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/index.html">
+<meta property="og:site_name" content="Dazhi blog">
+<meta property="og:description" content="前言:编写本章的主要目的是为了帮助那些一直想搭建博客的同学一个参考,本章搭建博客使用的是Hexo+GitHub,Hexo是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。 详细了解Hexo,使用GitHub的原因是GitHub提供的GitHub pages 是免费的,我们只需创建一个仓库就可以使用,GitHub官">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/hexo/GitHub%E5%88%9B%E5%BB%BA%E4%BB%93%E5%BA%931.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/hexo/GitHub%E5%88%9B%E5%BB%BA%E4%BB%93%E5%BA%932.png">
+<meta property="article:published_time" content="2018-05-22T16:49:02.000Z">
+<meta property="article:modified_time" content="2020-06-22T04:18:34.935Z">
+<meta property="article:author" content="da zhi">
+<meta property="article:tag" content="Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/hexo/GitHub%E5%88%9B%E5%BB%BA%E4%BB%93%E5%BA%931.png">
+
+<link rel="canonical" href="http://yoursite.com/2018/05/23/%E4%BD%BF%E7%94%A8Hexo-GitHub%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>使用Hexo+GitHub搭建博客 | Dazhi blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Dazhi blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">个人博客</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/23/%E4%BD%BF%E7%94%A8Hexo-GitHub%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="da zhi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Dazhi blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用Hexo+GitHub搭建博客
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-05-22 16:49:02" itemprop="dateCreated datePublished" datetime="2018-05-22T16:49:02Z">2018-05-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-06-22 04:18:34" itemprop="dateModified" datetime="2020-06-22T04:18:34Z">2020-06-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言:"></a>前言:</h4><p>编写本章的主要目的是为了帮助那些一直想搭建博客的同学一个参考,本章搭建博客使用的是Hexo+GitHub,Hexo是一个快速、简洁且高效的博客框架。Hexo 使用 Markdown（或其他渲染引擎）解析文章，在几秒内，即可利用靓丽的主题生成静态网页。 详细了解<a href="https://hexo.io/zh-cn/docs/index.html" target="_blank" rel="noopener">Hexo</a>,使用GitHub的原因是GitHub提供的GitHub pages 是免费的,我们只需创建一个仓库就可以使用,GitHub官方建议每个存储库保持在1GB以下。如果大型文件不在存储库中，此限制很容易保留。如果您的存储库超过1GB，则可能会收到来自GitHub支持的礼貌电子邮件，要求您减少存储库的大小以使其恢复。 对于我们这些技术人员来说,写博客无疑是为了分享自己的技术,还有一点也是为了我们后续可以拿我们自己写的文章来进行复习。所以1GB对我们来说已经足够了。还有重要的一点是博客完全托管在github上，基本上不需要花时间去管理，博客使用Markdown语法，上手很容易。 </p>
+<a id="more"></a>
+
+<h5 id="搭建需要了解的内容"><a href="#搭建需要了解的内容" class="headerlink" title="搭建需要了解的内容"></a>搭建需要了解的内容</h5><ol>
+<li>Git安装以及常用命令</li>
+<li>Nodejs安装</li>
+<li>Markdown语法</li>
+</ol>
+<h5 id="本地安装Git"><a href="#本地安装Git" class="headerlink" title="本地安装Git"></a>本地安装Git</h5><ol>
+<li>下载<a href="https://git-scm.com/" target="_blank" rel="noopener">Git</a></li>
+<li>安装Git,不会安装Git的同学可以自行百度安装</li>
+</ol>
+<h5 id="注册GitHub"><a href="#注册GitHub" class="headerlink" title="注册GitHub"></a>注册GitHub</h5><blockquote>
+<p>已有账号的用户可以略过</p>
+</blockquote>
+<ol>
+<li>打开<a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>官网</li>
+<li>填写注册信息进行注册,注册成功后登陆GitHub</li>
+</ol>
+<h5 id="创建仓库"><a href="#创建仓库" class="headerlink" title="创建仓库"></a>创建仓库</h5><ol>
+<li>在GitHub首页点击头像左边的+号,或者点击下三角符号按钮(New Repository按钮)创建仓库。 <img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/hexo/GitHub%E5%88%9B%E5%BB%BA%E4%BB%93%E5%BA%931.png" alt="GitHub创建仓库1"></li>
+<li>填写仓库创建信息: 仓库名称必须是 yourname.github.io(其中yourname是自己GitHub的用户名)。 </li>
+<li>填写好相关信息,点击<strong>Create repository(创建仓库)</strong>按钮。 (由于我已经创建,所以显示已经存在)<img src="https://cdn.jsdelivr.net/gh/wz-dazhi/pic@master/blog/hexo/GitHub%E5%88%9B%E5%BB%BA%E4%BB%93%E5%BA%932.png" alt="GitHub创建仓库2"></li>
+</ol>
+<h5 id="配置ssh"><a href="#配置ssh" class="headerlink" title="配置ssh"></a>配置ssh</h5><ol>
+<li><p>打开Git Bash终端,设置user name 和user email:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name &quot;你的GitHub用户名&quot;</span><br><span class="line">$ git config --global user.email &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>生成ssh密钥:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C &quot;你的GitHub注册邮箱&quot;</span><br></pre></td></tr></table></figure>
+
+<p>此时，在用户文件夹下就会有一个新的文件夹<strong>.ssh</strong>，里面有刚刚创建的ssh密钥文件<strong>id_rsa</strong>和<strong>id_rsa.pub</strong>。 </p>
+<p><em>注：id_rsa文件是私钥，要妥善保管，id_rsa.pub是公钥文件。</em> </p>
+</li>
+<li><p>添加公钥到github : </p>
+<ul>
+<li>点击用户头像，然后点击显示的<strong>Settings(设置)</strong>选项；  </li>
+<li>在用户设置栏，点击<strong>SSH and GPG keys</strong>选项，然后点击<strong>New SSH key(新建SSH)</strong>按钮；  </li>
+<li>将id_rsa.pub中的内容复制到<strong>Key</strong>文本框中，然后点击<strong>Add SSH key(添加SSH)</strong>按钮； </li>
+</ul>
+</li>
+<li><p>测试SSH： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br></pre></td></tr></table></figure>
+
+<p>接下来会出来下面的确认信息： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">The authenticity of host &#39;github.com (207.97.227.239)&#39; can&#39;t be established. </span><br><span class="line">RSA key fingerprint is 17:24:ac:a5:76:28:24:36:62:1b:36:4d:eb:df:a6:45.</span><br><span class="line"> Are you sure you want to continue connecting (yes&#x2F;no)?</span><br></pre></td></tr></table></figure>
+
+<p>输入yes,回车。 显示如下信息则说明OK。 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Hi yourname! You&#39;ve successfully authenticated, </span><br><span class="line">but GitHub does not provide shell access.</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="创建本地仓库"><a href="#创建本地仓库" class="headerlink" title="创建本地仓库"></a>创建本地仓库</h5><ol>
+<li><p>新建仓库文件夹：这里就取名为blog。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir blog</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进入到blog文件夹：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd blog # 切换到blog目录</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h5 id="安装Nodejs"><a href="#安装Nodejs" class="headerlink" title="安装Nodejs"></a>安装Nodejs</h5><ol>
+<li><p>下载<a href="https://nodejs.org/en/" target="_blank" rel="noopener">Nodejs</a>,然后安装</p>
+</li>
+<li><p>接着安装Hexo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-cli -g &#x2F;&#x2F; hexo全局安装</span><br><span class="line">hexo init  &#x2F;&#x2F; 初始化Hexo</span><br><span class="line">npm install  &#x2F;&#x2F; 安装依赖</span><br><span class="line">hexo server  &#x2F;&#x2F; 启动Hexo</span><br></pre></td></tr></table></figure>
+
+<p>启动之后，打开浏览器，在地址栏输入：<a href="https://link.zhihu.com/?target=http%3A//localhost%3A4000">http://localhost:4000</a>，你会看到Hexo的示例页面。</p>
+<p> <em>注：此时可以初始化git本地仓库了，或者是等本地博客搭建好之后也可以。</em> </p>
+</li>
+</ol>
+<h5 id="再探Hexo"><a href="#再探Hexo" class="headerlink" title="再探Hexo"></a>再探Hexo</h5><ol>
+<li><p>新建文章： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new &lt;title&gt;</span><br></pre></td></tr></table></figure>
+
+<p>此时在<strong>source_posts</strong>文件夹中便会多出一个文档”title.md”. 如果要删除，直接在此文件夹下删除对应的文件即可。 </p>
+</li>
+<li><p>生成静态页面</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>生成的静态内容在<strong>public</strong>文件夹内。</p>
+</li>
+<li><p>清除生成内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo clean</span><br></pre></td></tr></table></figure>
+
+<p>执行此操作会删除<strong>public</strong>文件夹中的内容。 </p>
+</li>
+</ol>
+<h5 id="部署Hexo"><a href="#部署Hexo" class="headerlink" title="部署Hexo"></a>部署Hexo</h5><ol>
+<li><p>编辑配置文件，关联远程仓库： 在编辑器中打开Hexo配置文件<strong>_config.yml</strong>，找到下面内容： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line">## Docs: https:&#x2F;&#x2F;hexo.io&#x2F;docs&#x2F;deployment.html</span><br><span class="line">deploy:</span><br><span class="line">  type:</span><br></pre></td></tr></table></figure>
+
+<p>配置为GitHub仓库信息:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line">## Docs: https:&#x2F;&#x2F;hexo.io&#x2F;docs&#x2F;deployment.html</span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@github.com:wz-dazhi&#x2F;wz-dazhi.github.io.git #github仓库地址</span><br><span class="line">  branch: master # github分支</span><br></pre></td></tr></table></figure>
+
+<p>由于<strong>_config.yml</strong>文件是属于yml格式的,所以注意配置的时候 <strong>:</strong> 后面都接一个空格</p>
+</li>
+<li><p>安装git插件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>部署</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>如果没有意外的话,部署就成功了,可以打开浏览器访问<a href="">yourname.github.io</a> 查看。 </p>
+</li>
+</ol>
+<h5 id="Hexo常用命令"><a href="#Hexo常用命令" class="headerlink" title="Hexo常用命令"></a>Hexo常用命令</h5><blockquote>
+<p>hexo 命令缩写</p>
+</blockquote>
+<p><strong>hexo g</strong>：hexo generate</p>
+<p><strong>hexo c</strong>：hexo clean</p>
+<p><strong>hexo s</strong>：hexo server</p>
+<p><strong>hexo d</strong>：hexo deploy</p>
+<blockquote>
+<p>hexo 命令组合</p>
+</blockquote>
+<p>hexo clean &amp;&amp; hexo g -s，就是清除、生成、启动 </p>
+<p>hexo clean &amp;&amp; hexo g -d，就是清除、生成、部署 </p>
+<p>本文介绍了hexo+github的简单搭建,本文基本上抄袭了知乎Hexo专栏第一章。</p>
+<p>前往专栏: <a href="https://zhuanlan.zhihu.com/z-hexo" target="_blank" rel="noopener">手把手教从零开始在GitHub上使用Hexo搭建博客教程</a> </p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2018/06/02/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F-Strategy/" rel="next" title="java设计模式之策略模式(Strategy)">
+      java设计模式之策略模式(Strategy) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言:</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#搭建需要了解的内容"><span class="nav-number">1.1.</span> <span class="nav-text">搭建需要了解的内容</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#本地安装Git"><span class="nav-number">1.2.</span> <span class="nav-text">本地安装Git</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#注册GitHub"><span class="nav-number">1.3.</span> <span class="nav-text">注册GitHub</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#创建仓库"><span class="nav-number">1.4.</span> <span class="nav-text">创建仓库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#配置ssh"><span class="nav-number">1.5.</span> <span class="nav-text">配置ssh</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#创建本地仓库"><span class="nav-number">1.6.</span> <span class="nav-text">创建本地仓库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装Nodejs"><span class="nav-number">1.7.</span> <span class="nav-text">安装Nodejs</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#再探Hexo"><span class="nav-number">1.8.</span> <span class="nav-text">再探Hexo</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#部署Hexo"><span class="nav-number">1.9.</span> <span class="nav-text">部署Hexo</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Hexo常用命令"><span class="nav-number">1.10.</span> <span class="nav-text">Hexo常用命令</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">da zhi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">da zhi</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

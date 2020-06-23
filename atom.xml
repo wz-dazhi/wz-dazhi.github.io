@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Dazhi blog</title>
+  <icon>http://yoursite.com/icon.png</icon>
+  <subtitle>个人博客</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2020-06-19T10:07:07.333Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>da zhi</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Class文件格式</title>
+    <link href="http://yoursite.com/2020/05/06/Class%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://yoursite.com/2020/05/06/Class%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/</id>
+    <published>2020-05-05T19:20:44.000Z</published>
+    <updated>2020-06-19T10:07:07.333Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:47 GMT+0800 (China Standard Time) --&gt;&lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;blockquote&gt;&lt;p&gt;java是跨平台语言，跨平台的主要原因是因为java源文件编译成class文件后运行在JVM虚拟机上。JVM并不是跟java语言所绑定的，对于JVM来讲只要是符合规范的class文件都是可以执行的，正是因为这个原因现在出现了很多语言：Scala、Kotlin、Groovy、Jython、JRuby等等。这些语言都是运行JVM虚拟机上，所以我们还是需要了解class的文件结构。&lt;/p&gt;&lt;/blockquote&gt;
+    
+    </summary>
+    
+    
+      <category term="JVM" scheme="http://yoursite.com/categories/JVM/"/>
+    
+    
+      <category term="JVM" scheme="http://yoursite.com/tags/JVM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Controller日期格式转换</title>
+    <link href="http://yoursite.com/2020/05/03/Controller%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2/"/>
+    <id>http://yoursite.com/2020/05/03/Controller%E6%97%A5%E6%9C%9F%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2/</id>
+    <published>2020-05-03T14:20:44.000Z</published>
+    <updated>2020-06-19T10:07:53.259Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:47 GMT+0800 (China Standard Time) --&gt;&lt;ol&gt;&lt;li&gt;通过自定义时间格式，实现Controller对外统一时间类型的配置，通过这样的配置可以实现，所有进出Controller的时间格式均按照配置格式处理，不需要单独在LocalDateTime属性上增加格式化注解&lt;/li&gt;&lt;/ol&gt;
+    
+    </summary>
+    
+    
+      <category term="Spring Boot" scheme="http://yoursite.com/categories/Spring-Boot/"/>
+    
+    
+      <category term="Spring MVC" scheme="http://yoursite.com/tags/Spring-MVC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用OpenFeign实现文件上传</title>
+    <link href="http://yoursite.com/2020/05/01/%E4%BD%BF%E7%94%A8openfeign%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6/"/>
+    <id>http://yoursite.com/2020/05/01/%E4%BD%BF%E7%94%A8openfeign%E4%B8%8A%E4%BC%A0%E6%96%87%E4%BB%B6/</id>
+    <published>2020-05-01T14:20:44.000Z</published>
+    <updated>2020-06-22T04:25:10.590Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;blockquote&gt;&lt;p&gt;本文使用Spring Cloud OpenFeign 进行服务于服务之间的文件传输。在工作中，往往需要进行文件的上传下载功能，如果多个业务都需要文件的上传，可以单独的将文件服务抽离出来一个单独的文件服务对外暴露提供服务。下面写个demo使用OpenFeign进行单个文件传输、多个文件传输。&lt;/p&gt;&lt;p&gt;&lt;strong&gt;&lt;em&gt;注意： 对于SpringCloud的服务发现本文不做重点讨论，读者可以自行百度实现。以下示列只展示服务于服务之间文件传输的核心代码，涉及到的代码都会列出来。&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;&lt;/blockquote&gt;
+    
+    </summary>
+    
+    
+      <category term="Spring Cloud" scheme="http://yoursite.com/categories/Spring-Cloud/"/>
+    
+    
+      <category term="OpenFeign" scheme="http://yoursite.com/tags/OpenFeign/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java Class加载过程</title>
+    <link href="http://yoursite.com/2020/03/29/java-Class%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/"/>
+    <id>http://yoursite.com/2020/03/29/java-Class%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/</id>
+    <published>2020-03-29T10:20:44.000Z</published>
+    <updated>2020-06-19T10:09:09.259Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h4 id=&quot;类加载过程&quot;&gt;&lt;a href=&quot;#类加载过程&quot; class=&quot;headerlink&quot; title=&quot;类加载过程&quot;&gt;&lt;/a&gt;类加载过程&lt;/h4&gt;&lt;blockquote&gt;&lt;p&gt;一个java源文件编译成二进制.class文件，.class文件被JVM加载到内存开始。它的整个生命周期分为：加载、验证、准备、解析、初始化、使用、卸载。&lt;/p&gt;&lt;p&gt;其中类加载过程分为3个阶段：加载、链接、初始化&lt;/p&gt;&lt;/blockquote&gt;
+    
+    </summary>
+    
+    
+      <category term="JVM" scheme="http://yoursite.com/categories/JVM/"/>
+    
+    
+      <category term="JVM" scheme="http://yoursite.com/tags/JVM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java双亲委派机制</title>
+    <link href="http://yoursite.com/2020/03/28/java-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/"/>
+    <id>http://yoursite.com/2020/03/28/java-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/</id>
+    <published>2020-03-28T10:20:44.000Z</published>
+    <updated>2020-06-19T10:09:00.447Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言:&quot;&gt;&lt;/a&gt;前言:&lt;/h5&gt;&lt;p&gt;说到双亲委派肯定跟类加载器ClassLoader是分不开的，下面介绍一下Java中的ClassLoader load Class的一个过程和双亲委派机制，接着自定义自己的ClassLoader。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="JVM" scheme="http://yoursite.com/categories/JVM/"/>
+    
+    
+      <category term="JVM" scheme="http://yoursite.com/tags/JVM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL驱动升级到8.0.15之后产生的时区问题</title>
+    <link href="http://yoursite.com/2020/01/04/MySQL%E9%A9%B1%E5%8A%A8%E5%8D%87%E7%BA%A7%E5%88%B08-0-15%E4%B9%8B%E5%90%8E%E4%BA%A7%E7%94%9F%E7%9A%84%E6%97%B6%E5%8C%BA%E9%97%AE%E9%A2%98/"/>
+    <id>http://yoursite.com/2020/01/04/MySQL%E9%A9%B1%E5%8A%A8%E5%8D%87%E7%BA%A7%E5%88%B08-0-15%E4%B9%8B%E5%90%8E%E4%BA%A7%E7%94%9F%E7%9A%84%E6%97%B6%E5%8C%BA%E9%97%AE%E9%A2%98/</id>
+    <published>2020-01-03T19:29:44.000Z</published>
+    <updated>2020-06-22T06:45:35.506Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;p&gt;&lt;strong&gt;MySQL驱动升级到8.0出现的时区问题&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;复现如下&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="MySQL问题" scheme="http://yoursite.com/categories/MySQL%E9%97%AE%E9%A2%98/"/>
+    
+    
+      <category term="MySQL" scheme="http://yoursite.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用frp实现内网穿透</title>
+    <link href="http://yoursite.com/2019/09/19/%E4%BD%BF%E7%94%A8frp%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/"/>
+    <id>http://yoursite.com/2019/09/19/%E4%BD%BF%E7%94%A8frp%E5%AE%9E%E7%8E%B0%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/</id>
+    <published>2019-09-18T18:24:49.000Z</published>
+    <updated>2020-06-19T10:06:53.980Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;准备工作&quot;&gt;&lt;a href=&quot;#准备工作&quot; class=&quot;headerlink&quot; title=&quot;准备工作&quot;&gt;&lt;/a&gt;准备工作&lt;/h5&gt;&lt;ol&gt;&lt;li&gt;&lt;p&gt;一台公网服务器(腾讯云, 阿里云 … 只要有外网ip的都可以)&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;一台内网机器(没有外网ip, 只有内网ip, 但是可以访问外部网络)&lt;/p&gt;&lt;/li&gt;&lt;/ol&gt;
+    
+    </summary>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/categories/Linux/"/>
+    
+    
+      <category term="内网穿透" scheme="http://yoursite.com/tags/%E5%86%85%E7%BD%91%E7%A9%BF%E9%80%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux-Centos7安装redis</title>
+    <link href="http://yoursite.com/2019/09/15/Linux-Centos7%E5%AE%89%E8%A3%85redis/"/>
+    <id>http://yoursite.com/2019/09/15/Linux-Centos7%E5%AE%89%E8%A3%85redis/</id>
+    <published>2019-09-14T20:09:25.000Z</published>
+    <updated>2020-06-22T06:17:11.073Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言:&quot;&gt;&lt;/a&gt;&lt;strong&gt;前言:&lt;/strong&gt;&lt;/h5&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;操作系统: Linux CentOS7.6.1810&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;redis: 5.0.5 -&amp;gt; redis 官网: &lt;a href=&quot;https://redis.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://redis.io/&lt;/a&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/categories/Linux/"/>
+    
+    
+      <category term="CentOS软件安装" scheme="http://yoursite.com/tags/CentOS%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Guava系列io之Base64</title>
+    <link href="http://yoursite.com/2018/07/28/Guava%E7%B3%BB%E5%88%97io%E4%B9%8BBase64/"/>
+    <id>http://yoursite.com/2018/07/28/Guava%E7%B3%BB%E5%88%97io%E4%B9%8BBase64/</id>
+    <published>2018-07-27T18:14:03.000Z</published>
+    <updated>2020-06-22T04:32:11.477Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:47 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h5&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;Guava版本: 23.0&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;本章简单介绍一下BaseEncoding的编码以及反编码,该类可以使用base16(), base32(), base64()包括对URLbase64编码等等..这里简单的演示一下base64的编码及反编码.顺便解释一下base64的工作原理&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Guava" scheme="http://yoursite.com/categories/Guava/"/>
+    
+    
+      <category term="Guava io" scheme="http://yoursite.com/tags/Guava-io/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Guava系列io之Closer</title>
+    <link href="http://yoursite.com/2018/07/25/Guava%E7%B3%BB%E5%88%97io%E4%B9%8BCloser/"/>
+    <id>http://yoursite.com/2018/07/25/Guava%E7%B3%BB%E5%88%97io%E4%B9%8BCloser/</id>
+    <published>2018-07-25T11:04:56.000Z</published>
+    <updated>2020-06-22T04:32:08.424Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h5&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;Guava版本: 23.0&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;在JDK7之前IO操作&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Guava" scheme="http://yoursite.com/categories/Guava/"/>
+    
+    
+      <category term="Guava io" scheme="http://yoursite.com/tags/Guava-io/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Guava系列io之字符(节)流</title>
+    <link href="http://yoursite.com/2018/07/25/Guava%E7%B3%BB%E5%88%97io%E4%B9%8B%E5%AD%97%E7%AC%A6-%E8%8A%82-%E6%B5%81/"/>
+    <id>http://yoursite.com/2018/07/25/Guava%E7%B3%BB%E5%88%97io%E4%B9%8B%E5%AD%97%E7%AC%A6-%E8%8A%82-%E6%B5%81/</id>
+    <published>2018-07-25T10:12:51.000Z</published>
+    <updated>2020-06-19T10:08:02.002Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h5&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;Guava版本: 23.0&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;上节中简单介绍了Files的一些使用,通过Files可以很方便的对文件的一些操作.本节介绍一下&lt;code&gt;CharSource/CharSink&lt;/code&gt; &lt;code&gt;ByteSource/ByteSink&lt;/code&gt;, 前两个是对字符流的处理,相等于JDK中的&lt;code&gt;Reader/Writer&lt;/code&gt;,Guava对其进行了封装. 后两个是对字节流的操作,当然也对应JDK中的&lt;code&gt;FileInputStream/FileOutputStream&lt;/code&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Guava" scheme="http://yoursite.com/categories/Guava/"/>
+    
+    
+      <category term="Guava io" scheme="http://yoursite.com/tags/Guava-io/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java设计模式之责任链(ChainOfResponsibility)</title>
+    <link href="http://yoursite.com/2018/07/16/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%B4%A3%E4%BB%BB%E9%93%BE-ChainOfResponsibility/"/>
+    <id>http://yoursite.com/2018/07/16/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%B4%A3%E4%BB%BB%E9%93%BE-ChainOfResponsibility/</id>
+    <published>2018-07-16T15:50:31.000Z</published>
+    <updated>2020-06-22T04:56:45.873Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h5&gt;&lt;p&gt;今天学习一下责任链模式,顾名思义这个模式就跟链条一样,一条接着一条.这里使用一个简单的例子来分析一下责任链模式,接着模拟一下JavaEE中的Filter&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://yoursite.com/categories/java/"/>
+    
+    
+      <category term="设计模式" scheme="http://yoursite.com/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Guava系列io之Files</title>
+    <link href="http://yoursite.com/2018/07/15/Guava%E7%B3%BB%E5%88%97io%E4%B9%8BFiles/"/>
+    <id>http://yoursite.com/2018/07/15/Guava%E7%B3%BB%E5%88%97io%E4%B9%8BFiles/</id>
+    <published>2018-07-14T16:27:40.000Z</published>
+    <updated>2020-06-22T04:31:56.796Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h5&gt;&lt;p&gt;Guava版本: 23.0&lt;/p&gt;&lt;p&gt;本章主要介绍一下Guava的IO使用FIles对file的一些操作和使用方式&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;首先定义两个文件,SOURCE_FILE是我提前新建好的,TARGET_FILE没有创建.使用Junit来操作这两个文件&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Guava" scheme="http://yoursite.com/categories/Guava/"/>
+    
+    
+      <category term="Guava io" scheme="http://yoursite.com/tags/Guava-io/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Guava系列utilities之Strings</title>
+    <link href="http://yoursite.com/2018/07/08/Guava%E7%B3%BB%E5%88%97utilities%E4%B9%8BStrings/"/>
+    <id>http://yoursite.com/2018/07/08/Guava%E7%B3%BB%E5%88%97utilities%E4%B9%8BStrings/</id>
+    <published>2018-07-07T20:49:08.000Z</published>
+    <updated>2020-06-19T10:08:53.065Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h5&gt;&lt;p&gt;Guava版本: 23.0&lt;/p&gt;&lt;p&gt;在本章当中会简单的介绍一下Strings字符串的一些处理方式, 也是平时在开发过程中经常用到的.顺便也介绍一下CharMatcher的使用,这个类也是大多对于字符的一些匹配以及处理,由于CharMatcher类中的方法比较多, 这里只简单的列出一些.如果在开发过程中有过多的需求对字符的处理,可以查看CharMatcher的官方API&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Guava" scheme="http://yoursite.com/categories/Guava/"/>
+    
+    
+      <category term="Guava utilities" scheme="http://yoursite.com/tags/Guava-utilities/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Guava系列utilities之Preconditions</title>
+    <link href="http://yoursite.com/2018/07/08/Guava%E7%B3%BB%E5%88%97utilities%E4%B9%8BPreconditions/"/>
+    <id>http://yoursite.com/2018/07/08/Guava%E7%B3%BB%E5%88%97utilities%E4%B9%8BPreconditions/</id>
+    <published>2018-07-07T20:35:23.000Z</published>
+    <updated>2020-06-19T10:08:41.680Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h5&gt;&lt;p&gt;Guava版本: 23.0&lt;/p&gt;&lt;p&gt;本章使用Guava中的Preconditionds进行断言检查,并自定义一些我们所期望的异常信息&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;检查不能为null, 这里使用expected指定会抛出我们期望的异常&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Guava" scheme="http://yoursite.com/categories/Guava/"/>
+    
+    
+      <category term="Guava utilities" scheme="http://yoursite.com/tags/Guava-utilities/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Guava系列utilities之Splitter</title>
+    <link href="http://yoursite.com/2018/07/05/Guava%E7%B3%BB%E5%88%97utilities%E4%B9%8BSplitter/"/>
+    <id>http://yoursite.com/2018/07/05/Guava%E7%B3%BB%E5%88%97utilities%E4%B9%8BSplitter/</id>
+    <published>2018-07-04T22:43:16.000Z</published>
+    <updated>2020-06-19T10:08:48.733Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h5&gt;&lt;p&gt;Guava版本: 23.0&lt;/p&gt;&lt;p&gt;本文使用Splitter做字符串的分割处理,Joiner主要是对字符串的拼接做处理,两者整好相反&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;处理字符串分割,并返回list集合&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Guava" scheme="http://yoursite.com/categories/Guava/"/>
+    
+    
+      <category term="Guava utilities" scheme="http://yoursite.com/tags/Guava-utilities/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Guava系列utilities之Joiner</title>
+    <link href="http://yoursite.com/2018/07/04/Guava%E7%B3%BB%E5%88%97utilities%E4%B9%8BJoiner/"/>
+    <id>http://yoursite.com/2018/07/04/Guava%E7%B3%BB%E5%88%97utilities%E4%B9%8BJoiner/</id>
+    <published>2018-07-03T23:09:56.000Z</published>
+    <updated>2020-06-19T10:08:36.416Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h5&gt;&lt;p&gt;Guava版本: 23.0&lt;/p&gt;&lt;p&gt;本文使用Joiner做字符串的处理&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;定义非null字符串集合, 带null字符串集合&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Guava" scheme="http://yoursite.com/categories/Guava/"/>
+    
+    
+      <category term="Guava utilities" scheme="http://yoursite.com/tags/Guava-utilities/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Mac安装JDK1.8</title>
+    <link href="http://yoursite.com/2018/07/01/Mac%E5%AE%89%E8%A3%85JDK1-8/"/>
+    <id>http://yoursite.com/2018/07/01/Mac%E5%AE%89%E8%A3%85JDK1-8/</id>
+    <published>2018-07-01T00:47:37.000Z</published>
+    <updated>2020-06-22T06:43:10.221Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言：&quot;&gt;&lt;a href=&quot;#前言：&quot; class=&quot;headerlink&quot; title=&quot;前言：&quot;&gt;&lt;/a&gt;前言：&lt;/h5&gt;&lt;p&gt;Mac系统版本：10.13.5&lt;/p&gt;&lt;p&gt;JDK：1.8&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Mac" scheme="http://yoursite.com/categories/Mac/"/>
+    
+    
+      <category term="Mac OS软件安装" scheme="http://yoursite.com/tags/Mac-OS%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java设计模式之工厂模式(Factory)</title>
+    <link href="http://yoursite.com/2018/06/23/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F-Factory/"/>
+    <id>http://yoursite.com/2018/06/23/java%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F-Factory/</id>
+    <published>2018-06-23T12:48:50.000Z</published>
+    <updated>2020-06-22T04:49:45.977Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言:&quot;&gt;&lt;/a&gt;前言:&lt;/h5&gt;&lt;p&gt;今天我们一起来回顾一下23中设计模式中的工厂模式,这里具体描述一下简单工厂方法,抽象工厂.以及简单理解Spring中的Bean工厂&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://yoursite.com/categories/java/"/>
+    
+    
+      <category term="设计模式" scheme="http://yoursite.com/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux Centos6.5安装redis</title>
+    <link href="http://yoursite.com/2018/06/10/Linux-Centos6-5%E5%AE%89%E8%A3%85redis/"/>
+    <id>http://yoursite.com/2018/06/10/Linux-Centos6-5%E5%AE%89%E8%A3%85redis/</id>
+    <published>2018-06-10T00:43:01.000Z</published>
+    <updated>2020-06-22T06:14:27.179Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 11:36:48 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言:&quot;&gt;&lt;/a&gt;&lt;strong&gt;前言:&lt;/strong&gt;&lt;/h5&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;操作系统: Linux CentOS6.5&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;redis: 4.0.9&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/categories/Linux/"/>
+    
+    
+      <category term="CentOS软件安装" scheme="http://yoursite.com/tags/CentOS%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
+  
+</feed>

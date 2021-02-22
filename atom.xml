@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2020-06-19T10:07:07.333Z</updated>
+  <updated>2020-06-19T10:07:53.259Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -15,27 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>Class文件格式</title>
-    <link href="http://yoursite.com/2020/05/06/Class%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/"/>
-    <id>http://yoursite.com/2020/05/06/Class%E6%96%87%E4%BB%B6%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/</id>
-    <published>2020-05-05T19:20:44.000Z</published>
-    <updated>2020-06-19T10:07:07.333Z</updated>
-    
-    <summary type="html">
-    
-      &lt;!-- build time:Tue Jun 23 2020 15:35:08 GMT+0800 (China Standard Time) --&gt;&lt;h3 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h3&gt;&lt;blockquote&gt;&lt;p&gt;java是跨平台语言，跨平台的主要原因是因为java源文件编译成class文件后运行在JVM虚拟机上。JVM并不是跟java语言所绑定的，对于JVM来讲只要是符合规范的class文件都是可以执行的，正是因为这个原因现在出现了很多语言：Scala、Kotlin、Groovy、Jython、JRuby等等。这些语言都是运行JVM虚拟机上，所以我们还是需要了解class的文件结构。&lt;/p&gt;&lt;/blockquote&gt;
-    
-    </summary>
-    
-    
-      <category term="JVM" scheme="http://yoursite.com/categories/JVM/"/>
-    
-    
-      <category term="JVM" scheme="http://yoursite.com/tags/JVM/"/>
-    
-  </entry>
   
   <entry>
     <title>Controller日期格式转换</title>
@@ -425,6 +404,27 @@
     <summary type="html">
     
       &lt;!-- build time:Tue Jun 23 2020 15:35:08 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言:&quot;&gt;&lt;/a&gt;&lt;strong&gt;前言:&lt;/strong&gt;&lt;/h5&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;操作系统: Linux CentOS6.5&lt;/p&gt;&lt;/li&gt;&lt;li&gt;&lt;p&gt;redis: 4.0.9&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="Linux" scheme="http://yoursite.com/categories/Linux/"/>
+    
+    
+      <category term="CentOS软件安装" scheme="http://yoursite.com/tags/CentOS%E8%BD%AF%E4%BB%B6%E5%AE%89%E8%A3%85/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux Centos6.5安装JDK以及环境变量的配置</title>
+    <link href="http://yoursite.com/2018/06/10/Linux-Centos6-5%E5%AE%89%E8%A3%85JDK%E4%BB%A5%E5%8F%8A%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E7%9A%84%E9%85%8D%E7%BD%AE/"/>
+    <id>http://yoursite.com/2018/06/10/Linux-Centos6-5%E5%AE%89%E8%A3%85JDK%E4%BB%A5%E5%8F%8A%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E7%9A%84%E9%85%8D%E7%BD%AE/</id>
+    <published>2018-06-09T23:02:48.000Z</published>
+    <updated>2020-06-22T06:11:21.169Z</updated>
+    
+    <summary type="html">
+    
+      &lt;!-- build time:Tue Jun 23 2020 15:35:08 GMT+0800 (China Standard Time) --&gt;&lt;h5 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言:&quot;&gt;&lt;/a&gt;&lt;strong&gt;前言:&lt;/strong&gt;&lt;/h5&gt;&lt;ul&gt;&lt;li&gt;操作系统: Linux CentOS6.5&lt;/li&gt;&lt;li&gt;JDK: 1.8&lt;/li&gt;&lt;/ul&gt;&lt;h5 id=&quot;查看并卸载CentOS自带的OpenJDK&quot;&gt;&lt;a href=&quot;#查看并卸载CentOS自带的OpenJDK&quot; class=&quot;headerlink&quot; title=&quot;查看并卸载CentOS自带的OpenJDK&quot;&gt;&lt;/a&gt;&lt;strong&gt;查看并卸载CentOS自带的OpenJDK&lt;/strong&gt;&lt;/h5&gt;&lt;ul&gt;&lt;li&gt;&lt;p&gt;&lt;strong&gt;注意:&lt;/strong&gt; 一般云服务器是不存在OpenJDK的,所以可以直接跳过第一步,直接进行第二步.(目前笔者没有碰到过阿里云,腾讯云服务器上存在OpenJDK)&lt;/p&gt;
     
     </summary>
     
